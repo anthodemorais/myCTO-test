@@ -30,5 +30,6 @@ sequelize.sync({ force: true })
 
 module.exports = {
     User,
-    Movie
+    Movie,
+    UserMovie
 };

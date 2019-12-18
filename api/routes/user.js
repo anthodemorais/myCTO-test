@@ -4,16 +4,16 @@ const config = require('../config/config.js');
 const eJwt = require('express-jwt');
 const sanitizer = require('sanitizer');
 
-exports.default = (app, con, model) => {
+exports.default = (app, model) => {
 
     app.get('/user/:id', (req, res) => {
-        User.findAll({ where: { id: sanitizer.sanitize(req.params.id) } })
+        model.findAll({ where: { id: sanitizer.sanitize(req.params.id) } })
         .then(user => {
             res.json(user);
         })
     })
     app.get('/users', (req, res) => {
-        User.findAll()
+        model.findAll()
         .then(users => {
             res.json(users);
         })
@@ -27,11 +27,11 @@ exports.default = (app, con, model) => {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         
         if (re.test(String(email).toLowerCase()) && password.length >= 6) {
-            User.findAll({ where: { email: email } })
+            model.findAll({ where: { email: email } })
             .then(result => {
                 if (!result && result.length == 0) {
 
-                    User.create({ email, password, firstname, lastname })
+                    model.create({ email, password, firstname, lastname })
                     .then(() => {
                         let token = jwt.encode(this, config.secret);
                         res.status(200);
@@ -53,7 +53,7 @@ exports.default = (app, con, model) => {
         var email    = sanitizer.sanitize(req.body.email),
             password = sanitizer.sanitize(req.body.password);
 
-        User.findAll({ where: { email: email } })
+        model.findAll({ where: { email: email } })
             .then(result => {
                 if (result && result.length != 0) {
                     if (!passwordHash.verify(password, result[0].password)) {
@@ -73,7 +73,7 @@ exports.default = (app, con, model) => {
             })
     })
     .delete('/user/:id', eJwt({secret: config.secret}), (req, res) => {
-        User.destroy({ where: { id: sanitizer.sanitize(req.params.id) } })
+        model.destroy({ where: { id: sanitizer.sanitize(req.params.id) } })
         .then(() => {
             res.json({"Success": "Successfully deleted"});
         })
