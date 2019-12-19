@@ -5,7 +5,7 @@ const sanitizer = require('sanitizer');
 
 exports.default = (app, model, UserMovie, User) => {
 
-    app.get('/movies/:user_id', eJwt({secret: config.secret}), (req, res) => {
+    app.get('/movies/:user_id', (req, res) => {
         model.findAll({ include: [
             { model: User, where: { id: sanitizer.sanitize(req.params.user_id) } },
         ] })
@@ -14,7 +14,7 @@ exports.default = (app, model, UserMovie, User) => {
             res.json(movies);
         })
     })
-    .post('/movies/:user_id', eJwt({secret: config.secret}), (req, res) => {
+    .post('/movies/:user_id', (req, res) => {
         let title = sanitizer.sanitize(req.body.title);
         
         model.findOrCreate({ where: { title: title }, defaults: {} })
@@ -29,7 +29,7 @@ exports.default = (app, model, UserMovie, User) => {
             })
         })
     })
-    .delete('/movies/:user_id', eJwt({secret: config.secret}), (req, res) => {
+    .delete('/movies/:user_id', (req, res) => {
         model.destroy({ where: { id: sanitizer.sanitize(req.params.id) } })
         .then(() => {
             res.status(200)
