@@ -15,7 +15,7 @@ app.use(session({
 app.use(bodyParser.urlencoded({extended : true}));
 
 require('./routes/user').default(app, User);
-require('./routes/movie').default(app, Movie, UserMovie);
+require('./routes/movie').default(app, Movie, UserMovie, User);
 
 const port = 8000;
 app.listen(port, () => console.log(`Listening on port ${port}`));

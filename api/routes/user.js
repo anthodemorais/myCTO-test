@@ -29,13 +29,12 @@ exports.default = (app, model) => {
         if (re.test(String(email).toLowerCase()) && password.length >= 6) {
             model.findAll({ where: { email: email } })
             .then(result => {
-                if (!result && result.length == 0) {
-
+                if (!result || result.length == 0) {
                     model.create({ email, password, firstname, lastname })
                     .then(() => {
                         let token = jwt.encode(this, config.secret);
                         res.status(200);
-                        res.json({token: token, user: result });
+                        res.json({token: token });
                     })
                 }
                 else {
@@ -55,15 +54,15 @@ exports.default = (app, model) => {
 
         model.findAll({ where: { email: email } })
             .then(result => {
-                if (result && result.length != 0) {
-                    if (!passwordHash.verify(password, result[0].password)) {
+                if (result.length != 0) {
+                    if (passwordHash.verify(password, result[0].dataValues.password)) {
                         res.status(500);
                         res.json({err: "Email or password incorrect"});
                     }
                     else {
                         let token = jwt.encode(this, config.secret);
                         res.status(200);
-                        res.json({token: token, user: result });
+                        res.json({token: token, user: result[0].dataValues });
                     }
                 }
                 else {
