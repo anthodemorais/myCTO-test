@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert';
 import { moviesURL, moviesAPIKey } from '../config/config';
 
 class MoviesList extends Component {
@@ -14,7 +15,8 @@ class MoviesList extends Component {
         // get the top rated movies
         fetch(moviesURL + '/movie/top_rated?api_key=' + moviesAPIKey)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.results }));
+            .then(data => this.setState({ movies: data.results }))
+            .catch(() => swal("error", "There was an error when adding the movie to the favourites list", "error"));
     }
 
     addMovieToUser(e) {
@@ -26,7 +28,8 @@ class MoviesList extends Component {
     render() { 
         // lists the top rated movies
         return (
-            <div>
+            <div className="col section-container">
+                <h3 className="col">All movies</h3>
                 {this.state.movies.map(movie => {
                     return (
                         <div className="movie" key={movie.id}>
@@ -34,6 +37,7 @@ class MoviesList extends Component {
                             <button
                                 onClick={(e) => this.addMovieToUser(e)}
                                 movie={movie.title}
+                                className="btn btn-outline-light"
                             >
                                 +
                             </button>

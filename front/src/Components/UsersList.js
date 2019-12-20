@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert'
 import { apiURL } from '../config/config';
 
 class UserList extends Component {
@@ -24,13 +25,17 @@ class UserList extends Component {
             .then(res => res.json())
             .then(data => {
                 this.getUsers()
-            });
+            })
+            .catch(() => swal("error", "There was an error when adding the movie to the favourites list", "error"))
+
     }
 
     getUsers() {
         fetch(apiURL + "/users")
             .then(res => res.json())
-            .then(data => this.setState({ users: data }));
+            .then(data => this.setState({ users: data }))
+            .catch(() => swal("error", "There was an error when adding the movie to the favourites list", "error"))
+
     }
 
     inputsChanged(e) {
@@ -46,17 +51,17 @@ class UserList extends Component {
     }
 
     render() {
-        console.log(this.state.showForm)
         return (
-            <div>
-                <div>
-                    {this.state.users.map(user => <button key={user.id} onClick={(e) => this.selectUser(e)} user={user.id}>{user.firstname}</button>)}
-                    <button onClick={(e) => {this.openForm()}}>Add user</button>
+            <div className="col section-container">
+                <h3 className="col">Users</h3>
+                <div className="col">
+                    {this.state.users.map(user => <button className="btn btn-primary" key={user.id} onClick={(e) => this.selectUser(e)} user={user.id}>{user.firstname}</button>)}
+                    {!this.state.showForm && <button className="btn btn-outline-primary" onClick={(e) => {this.openForm()}}>+</button>}
                 </div>
-                {this.state.showForm && <form onSubmit={(e) => {this.createUser(e)}}>
+                {this.state.showForm && <form className="col" onSubmit={(e) => {this.createUser(e)}}>
                     <input type="text" onChange={(e) => {this.inputsChanged(e)}} name="firstname" placeholder="Firstname" />
                     <input type="text" onChange={(e) => {this.inputsChanged(e)}} name="lastname" placeholder="Lastname" />
-                    <input type="submit" value="Create user" />
+                    <input type="submit" className="btn btn-primary" value="Create user" />
                 </form>}
             </div>
         );
