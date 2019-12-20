@@ -5,6 +5,7 @@ const sanitizer = require('sanitizer');
 
 exports.default = (app, model, UserMovie, User) => {
 
+    // returns the user's favourite movies list
     app.get('/movies/:user_id', (req, res) => {
         model.findAll({ include: [
             { model: User, where: { id: sanitizer.sanitize(req.params.user_id) } },
@@ -19,10 +20,13 @@ exports.default = (app, model, UserMovie, User) => {
         })
     })
     .post('/movies/:user_id', (req, res) => {
+        // adds the movie with the title passed in the body to the list of the user in the url
         let title = sanitizer.sanitize(req.body.title);
         
+        // if the movie is in the database, return it, else create it and return it
         model.findOrCreate({ where: { title: title }, defaults: {} })
         .then(([movie, created]) => {
+            // adds the movie to the user's favourite movies list
             UserMovie.create({
                 userId: sanitizer.sanitize(req.params.user_id),
                 movieId: movie.id
@@ -42,6 +46,7 @@ exports.default = (app, model, UserMovie, User) => {
         })
     })
     .delete('/movies/:user_id/:movie_id', (req, res) => {
+        // removes the movie from the list
         UserMovie.destroy({ where: { userId: sanitizer.sanitize(req.params.user_id), movieId: sanitizer.sanitize(req.params.movie_id)} })
         .then(() => {
             res.status(200)

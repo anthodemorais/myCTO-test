@@ -20,18 +20,21 @@ class App extends React.Component {
     }
 
     addMovieToUser(title) {
+        // add movie to the list and selects user to refresh the list
         fetch(apiURL + '/movies/' + this.state.selectedUser.id, {method: 'POST', body: JSON.stringify({title}), headers: {"Content-type": "application/json; charset=UTF-8"}})
             .then(() => this.selectUser(this.state.selectedUser.id, this.state.selectedUser.firstname))
             .catch(() => swal("error", "There was an error when adding the movie to the favourites list", "error"))
     }
 
     removeMovie(e) {
+        // removes the movie from the list and selects user to refresh the list
         fetch(`${apiURL}/movies/${this.state.selectedUser.id}/${e.target.getAttribute("movie")}`, {method: "DELETE"})
             .then(() => this.selectUser(this.state.selectedUser.id, this.state.selectedUser.firstname))
             .catch(() => swal("error", "There was an error when adding the movie to the favourites list", "error"))
     }
 
     selectUser(id, firstname) {
+        // gets the movies of the selected user and updates the state to display the list
         fetch(apiURL + "/movies/" + id)
             .then(result => result.json())
             .then(movies => this.setState({ movies, selectedUser: {id, firstname} }))
@@ -48,6 +51,7 @@ class App extends React.Component {
                     </div>
                     <div className="container col">
                         <UserList selectUser={(id, firstname) => this.selectUser(id, firstname)} />
+                        {/* if user a user is selected, show the list */}
                         {this.state.selectedUser.id && <FavList movies={this.state.movies} removeMovie={(e) => this.removeMovie(e)} />}
                     </div>
                 </div>

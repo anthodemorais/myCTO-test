@@ -26,7 +26,6 @@ class MoviesList extends Component {
     }
 
     render() { 
-        // lists the top rated movies
         return (
             <div className="col section-container">
                 <h3 className="col">All movies</h3>

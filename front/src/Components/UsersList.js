@@ -21,6 +21,7 @@ class UserList extends Component {
     createUser(e) {
         e.preventDefault();
 
+        // creates a new user
         fetch(apiURL + "/users/new", {method: "POST", body: JSON.stringify({firstname: this.state.firstname, lastname: this.state.lastname}), headers: {"Content-type": "application/json; charset=UTF-8"}})
             .then(res => res.json())
             .then(data => {
@@ -31,6 +32,7 @@ class UserList extends Component {
     }
 
     getUsers() {
+        // get users list
         fetch(apiURL + "/users")
             .then(res => res.json())
             .then(data => this.setState({ users: data }))

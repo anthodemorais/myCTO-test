@@ -7,6 +7,7 @@ const { User, Movie, UserMovie} = require('./sequelize');
 
 const app = express();
 
+// configure bodyParser to read url and body params
 app.use(bodyParser.json());
 app.use(session({
 	secret: config.secret,
@@ -14,9 +15,12 @@ app.use(session({
 	saveUninitialized: true
 }));
 app.use(bodyParser.urlencoded({extended : true}));
+
+// configure cors
 app.use(cors())
 app.options('*', cors());
 
+// import all route files and executes the function they export
 require('./routes/user').default(app, User);
 require('./routes/movie').default(app, Movie, UserMovie, User);
 

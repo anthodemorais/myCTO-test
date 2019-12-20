@@ -16,18 +16,22 @@ const sequelize = new Sequelize('mycto-test', 'root', 'root', {
     }
 });
 
+// import and execute functions to create each model
 const User = UserModel(sequelize, Sequelize)
-const UserMovie = sequelize.define('user_movie', {})
+const UserMovie = sequelize.define('user_movie', {}) // table that will represent the Many to Many relationship between users and movies
 const Movie = MovieModel(sequelize, Sequelize)
 
+// create the many to many relationship
 User.belongsToMany(Movie, { through: UserMovie, unique: false })
 Movie.belongsToMany(User, { through: UserMovie, unique: false })
 
+// synchronizes sequelize with the database
 sequelize.sync({ force: true })
   .then(() => {
     console.log(`Database & tables created!`)
 });
 
+// returns the objects created
 module.exports = {
     User,
     Movie,
